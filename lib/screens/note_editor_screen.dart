@@ -57,50 +57,22 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     Navigator.pop(context);
   }
 
-  void _deleteNote() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Xác nhận xóa'),
-        content: const Text('Bạn có chắc chắn muốn xóa ghi chú này?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Hủy'),
-          ),
-          TextButton(
-            onPressed: () {
-              Provider.of<NoteProvider>(context, listen: false)
-                  .deleteNote(widget.note!.id!);
-              Navigator.pop(context); 
-              Navigator.pop(context); 
-            },
-            child: const Text('Xóa', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.note != null;
 
     return Scaffold(
+      // --- APPBAR MÀN HÌNH SOẠN THẢO ---
       appBar: AppBar(
         title: Text(isEditing ? 'Sửa Ghi Chú' : 'Thêm Ghi Chú'),
         actions: [
-          if (isEditing)
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: _deleteNote,
-            ),
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: _saveNote,
           )
         ],
       ),
+      // ---------------------------------
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
