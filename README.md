@@ -2,14 +2,7 @@
 
 ---
 
-## Trải nghiệm Giao diện
-
-Giao diện của ứng dụng được tối ưu để mang lại cảm giác tập trung và dễ sử dụng:
-
-* **Phong cách Modern & Warm:** Sử dụng bảng màu tông ấm (Cam đất, Xanh nhạt, Trắng ngà) mang lại cảm giác nhẹ nhàng.
-* **Thiết kế phẳng (Flat Design):** Lược bỏ các bóng đổ nặng nề, sử dụng viền siêu mỏng và các góc bo tròn lớn (Border Radius 20).
-* **Thanh công cụ linh hoạt:** AppBar có thể chuyển đổi qua lại giữa Tiêu đề thông thường và Thanh Tìm kiếm.
-* **Tương tác mượt mà:** Mọi thay đổi dữ liệu đều được cập nhật tức thì trên giao diện nhờ sử dụng Provider.
+## Giao diện
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/aed5eaaf-d6cb-4b0b-acd7-903a5b135068" alt="Screenshot Ứng dụng" width="350"/>
