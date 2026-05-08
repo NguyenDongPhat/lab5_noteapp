@@ -39,3 +39,5 @@ Dự án sử dụng các công nghệ và thư viện phổ biến trong hệ s
 * **Local Database:** `sqflite` (SQLite cho Flutter) và `path_provider` (lấy đường dẫn lưu trữ trên thiết bị).
 * **State Management:** `provider` (quản lý trạng thái tập trung).
 * **Tiện ích khác:** `intl` (định dạng hiển thị ngày tháng).
+
+Link video demo:https://drive.google.com/file/d/1_XVmiHk8LzrLxmWPoR6COHaIC_hcfhq2/view?usp=sharing
