@@ -15,8 +15,13 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  // Biến cho Chọn Nhiều
   bool _isSelectionMode = false;
   final Set<int> _selectedIds = {};
+  
+  // Biến cho Tìm Kiếm
+  bool _isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -26,13 +31,14 @@ class HomePageState extends State<HomePage> {
     });
   }
 
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   void _editNote(Note? note) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NoteEditorScreen(note: note),
-      ),
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (context) => NoteEditorScreen(note: note)));
   }
 
   void _toggleSelection(int id) {
@@ -97,19 +103,63 @@ class HomePageState extends State<HomePage> {
               title: Text('${_selectedIds.length} mục đã chọn'),
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.delete_sweep, color: Colors.redAccent),
+                  icon: const Icon(Icons.delete_sweep, color: Colors.white),
                   onPressed: _deleteSelectedNotes,
                 ),
               ],
             )
           : AppBar(
-              title: const Text('Ghi chú của tôi'),
+              title: _isSearching
+                  ? TextField(
+                      controller: _searchController,
+                      decoration: const InputDecoration(
+                        hintText: 'Tìm kiếm...',
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(color: Colors.white70),
+                      ),
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                      autofocus: true,
+                      cursorColor: Colors.white,
+                      onChanged: (value) {
+                        Provider.of<NoteProvider>(context, listen: false).setSearchQuery(value);
+                      },
+                    )
+                  : const Text('Ghi chú của tôi'),
+              actions: [
+                // Nút Bật/Tắt tìm kiếm
+                IconButton(
+                  icon: Icon(_isSearching ? Icons.close : Icons.search),
+                  onPressed: () {
+                    setState(() {
+                      _isSearching = !_isSearching;
+                      if (!_isSearching) {
+                        _searchController.clear();
+                        Provider.of<NoteProvider>(context, listen: false).setSearchQuery('');
+                      }
+                    });
+                  },
+                ),
+                // Nút Sắp xếp (Chỉ hiện khi không tìm kiếm cho đỡ rối)
+                if (!_isSearching)
+                  PopupMenuButton<SortOption>(
+                    icon: const Icon(Icons.sort),
+                    onSelected: (SortOption result) {
+                      Provider.of<NoteProvider>(context, listen: false).setSortOption(result);
+                    },
+                    itemBuilder: (BuildContext context) => <PopupMenuEntry<SortOption>>[
+                      const PopupMenuItem<SortOption>(value: SortOption.dateDesc, child: Text('Mới nhất')),
+                      const PopupMenuItem<SortOption>(value: SortOption.dateAsc, child: Text('Cũ nhất')),
+                      const PopupMenuItem<SortOption>(value: SortOption.titleAsc, child: Text('Tên A-Z')),
+                      const PopupMenuItem<SortOption>(value: SortOption.titleDesc, child: Text('Tên Z-A')),
+                    ],
+                  ),
+              ],
             ),
       body: SizedBox.expand(
         child: Consumer<NoteProvider>(
           builder: (context, provider, child) {
             if (provider.notes.isEmpty) {
-              return const Center(child: Text('Chưa có ghi chú nào.'));
+              return Center(child: Text(_isSearching ? 'Không tìm thấy kết quả.' : 'Chưa có ghi chú nào.'));
             }
             return ListView.builder(
               itemCount: provider.notes.length,
@@ -171,7 +221,6 @@ class HomePageState extends State<HomePage> {
 
 class CountdownSnackBar extends StatefulWidget {
   final String message;
-
   const CountdownSnackBar({super.key, required this.message});
 
   @override
@@ -187,7 +236,6 @@ class _CountdownSnackBarState extends State<CountdownSnackBar> {
   void initState() {
     super.initState();
     _endTime = DateTime.now().add(const Duration(seconds: 5));
-
     _timer = Timer.periodic(const Duration(milliseconds: 200), (timer) {
       final now = DateTime.now();
       final remaining = _endTime.difference(now).inSeconds;
